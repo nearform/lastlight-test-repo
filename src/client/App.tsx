@@ -34,6 +34,17 @@ export default function App() {
     await load()
   }
 
+  async function updateLatestTodoTargetDate(value: string) {
+    if (todos.length === 0) return
+
+    const latest = todos[todos.length - 1]
+    await todosApi[':id'].$patch({
+      param: { id: String(latest.id) },
+      json: { targetDate: value || null },
+    })
+    await load()
+  }
+
   async function toggle(todo: Todo) {
     await todosApi[':id'].$patch({
       param: { id: String(todo.id) },
@@ -64,7 +75,17 @@ export default function App() {
           type="date"
           aria-label="Target date (optional)"
           value={targetDate}
-          onChange={(e) => setTargetDate(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value
+            setTargetDate(value)
+
+            // When the title field is empty but we already have todos,
+            // treat this as modifying the most recently created todo's
+            // target date rather than composing a new one.
+            if (!title && todos.length > 0) {
+              void updateLatestTodoTargetDate(value)
+            }
+          }}
         />
         <button type="submit">Add</button>
       </form>
