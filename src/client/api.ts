@@ -7,4 +7,5 @@ export const client = hc<AppType>('/')
 
 export const todosApi = client.api.todos
 
+// Todo.targetDate is an optional `YYYY-MM-DD` date string, or null when unset.
 export type { Todo } from '../server/todos'
