@@ -7,7 +7,14 @@
 
 .app h1 {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.app-tagline {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #666;
 }
 
 .add-form {
