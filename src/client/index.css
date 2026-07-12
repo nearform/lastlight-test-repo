@@ -1,15 +1,23 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --bg: #0d2f6d;
+  --text: #e4f8ff;
+  --text-h: #f4fff7;
+  --border: rgba(184, 233, 255, 0.35);
+  --code-bg: rgba(8, 38, 94, 0.6);
+  --accent: #39ffb6;
+  --accent-bg: rgba(57, 255, 182, 0.18);
+  --accent-border: rgba(57, 255, 182, 0.55);
+  --social-bg: rgba(10, 52, 120, 0.55);
+  --surface: rgba(9, 44, 107, 0.72);
+  --surface-strong: rgba(6, 33, 84, 0.85);
+  --surface-border: rgba(184, 233, 255, 0.45);
+  --muted-text: rgba(214, 247, 255, 0.72);
+  --danger: #ff8fa3;
+  --danger-hover: #ffc2cf;
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(3, 18, 48, 0.45) 0 28px 60px -30px,
+    rgba(5, 22, 58, 0.35) 0 18px 30px -12px,
+    rgba(0, 0, 0, 0.4) 0 6px 18px -14px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -17,7 +25,7 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -32,21 +40,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    color-scheme: light;
   }
 
   #social .button-icon {
-    filter: invert(1) brightness(2);
+    filter: brightness(1.35) saturate(1.4);
   }
 }
 
@@ -55,7 +53,7 @@
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
+  border-inline: 1px solid var(--surface-strong);
   min-height: 100svh;
   display: flex;
   flex-direction: column;

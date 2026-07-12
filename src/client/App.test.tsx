@@ -54,6 +54,9 @@ afterEach(cleanup)
 describe('<App />', () => {
   it('shows the empty state', async () => {
     render(<App />)
+    expect(
+      screen.getByRole('heading', { name: 'NEARFORMDOS' })
+    ).toBeInTheDocument()
     expect(await screen.findByText(/add your first todo/i)).toBeInTheDocument()
   })
 
