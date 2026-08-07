@@ -52,6 +52,11 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('<App />', () => {
+  it('shows the app title as "Todonts"', () => {
+    render(<App />)
+    expect(screen.getByRole('heading', { name: 'Todonts' })).toBeInTheDocument()
+  })
+
   it('shows the empty state', async () => {
     render(<App />)
     expect(await screen.findByText(/add your first todo/i)).toBeInTheDocument()
