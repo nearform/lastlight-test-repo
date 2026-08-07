@@ -5,6 +5,7 @@ import './App.css'
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
+  const [targetDate, setTargetDate] = useState('')
   const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
@@ -21,8 +22,26 @@ export default function App() {
     e.preventDefault()
     const value = title.trim()
     if (!value) return
-    await todosApi.$post({ json: { title: value } })
+
+    const body: { title: string; targetDate?: string } = { title: value }
+    if (targetDate) {
+      body.targetDate = targetDate
+    }
+
+    await todosApi.$post({ json: body })
     setTitle('')
+    setTargetDate('')
+    await load()
+  }
+
+  async function updateLatestTodoTargetDate(value: string) {
+    if (todos.length === 0) return
+
+    const latest = todos[todos.length - 1]
+    await todosApi[':id'].$patch({
+      param: { id: String(latest.id) },
+      json: { targetDate: value || null },
+    })
     await load()
   }
 
@@ -52,6 +71,22 @@ export default function App() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <input
+          type="date"
+          aria-label="Target date (optional)"
+          value={targetDate}
+          onChange={(e) => {
+            const value = e.target.value
+            setTargetDate(value)
+
+            // When the title field is empty but we already have todos,
+            // treat this as modifying the most recently created todo's
+            // target date rather than composing a new one.
+            if (!title && todos.length > 0) {
+              void updateLatestTodoTargetDate(value)
+            }
+          }}
+        />
         <button type="submit">Add</button>
       </form>
 
@@ -70,6 +105,9 @@ export default function App() {
                   onChange={() => toggle(todo)}
                 />
                 <span>{todo.title}</span>
+                {todo.targetDate && (
+                  <span className="todo-date">Target: {todo.targetDate}</span>
+                )}
               </label>
               <button
                 className="remove"

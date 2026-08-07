@@ -15,8 +15,17 @@ vi.mock('./api', () => {
       // Return fresh objects each call, like a real HTTP response, so
       // React sees a new reference and re-renders.
       $get: async () => json(store.todos.map((t) => ({ ...t }))),
-      $post: async ({ json: { title } }: { json: { title: string } }) => {
-        const todo = { id: store.nextId++, title, done: false }
+      $post: async ({
+        json: { title, targetDate },
+      }: {
+        json: { title: string; targetDate?: string | null }
+      }) => {
+        const todo: Todo = {
+          id: store.nextId++,
+          title,
+          done: false,
+          targetDate: targetDate ?? null,
+        }
         store.todos.push(todo)
         return json(todo)
       },
@@ -57,7 +66,7 @@ describe('<App />', () => {
     expect(await screen.findByText(/add your first todo/i)).toBeInTheDocument()
   })
 
-  it('adds a todo', async () => {
+  it('adds a todo without a target date', async () => {
     const user = userEvent.setup()
     render(<App />)
     await screen.findByText(/add your first todo/i)
@@ -67,10 +76,28 @@ describe('<App />', () => {
 
     expect(await screen.findByText('Buy milk')).toBeInTheDocument()
     expect(screen.getByText('1 remaining')).toBeInTheDocument()
+    expect(screen.queryByText(/Target:/i)).not.toBeInTheDocument()
+  })
+
+  it('adds a todo with a target date', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText(/add your first todo/i)
+
+    await user.type(screen.getByLabelText('New todo'), 'Buy milk')
+    await user.type(
+      screen.getByLabelText('Target date (optional)'),
+      '2026-12-31',
+    )
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(await screen.findByText('Buy milk')).toBeInTheDocument()
+    expect(screen.getByText('Target: 2026-12-31')).toBeInTheDocument()
+    expect(screen.getByText('1 remaining')).toBeInTheDocument()
   })
 
   it('toggles a todo as done', async () => {
-    store.todos = [{ id: 1, title: 'Walk dog', done: false }]
+    store.todos = [{ id: 1, title: 'Walk dog', done: false, targetDate: null }]
     store.nextId = 2
     const user = userEvent.setup()
     render(<App />)
@@ -84,7 +111,7 @@ describe('<App />', () => {
   })
 
   it('deletes a todo', async () => {
-    store.todos = [{ id: 1, title: 'Old task', done: false }]
+    store.todos = [{ id: 1, title: 'Old task', done: false, targetDate: null }]
     store.nextId = 2
     const user = userEvent.setup()
     render(<App />)
