@@ -47,6 +47,14 @@ const { default: App } = await import('./App')
 beforeEach(() => {
   store.todos = []
   store.nextId = 1
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.clear()
+  }
+
+  if (typeof document !== 'undefined') {
+    delete document.documentElement.dataset.theme
+  }
 })
 
 afterEach(cleanup)
@@ -93,5 +101,51 @@ describe('<App />', () => {
     await user.click(screen.getByRole('button', { name: 'Delete Old task' }))
 
     expect(await screen.findByText(/add your first todo/i)).toBeInTheDocument()
+  })
+
+  it('renders a theme toggle button in the header', async () => {
+    render(<App />)
+
+    const toggle = await screen.findByRole('button', {
+      name: /switch to dark mode/i,
+    })
+
+    expect(toggle).toBeInTheDocument()
+    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('toggles theme aria state and label when clicked', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const toggle = await screen.findByRole('button', {
+      name: /switch to dark mode/i,
+    })
+
+    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(toggle)
+
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-pressed', 'true')
+      expect(toggle).toHaveAccessibleName(/switch to light mode/i)
+    })
+  })
+
+  it('sets data-theme on documentElement when toggled', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const toggle = await screen.findByRole('button', {
+      name: /switch to dark mode/i,
+    })
+
+    expect(document.documentElement.dataset.theme).toBeUndefined()
+
+    await user.click(toggle)
+
+    await waitFor(() => {
+      expect(document.documentElement.dataset.theme).toBe('dark')
+    })
   })
 })
