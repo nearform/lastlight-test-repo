@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { todosApi, type Todo } from './api'
 import './App.css'
 
+const TAGLINE = 'Do all your stuff!'
+
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
@@ -44,6 +46,7 @@ export default function App() {
   return (
     <main className="app">
       <h1>Todos</h1>
+      <p className="app-tagline">{TAGLINE}</p>
 
       <form className="add-form" onSubmit={addTodo}>
         <input

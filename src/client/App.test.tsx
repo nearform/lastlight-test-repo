@@ -54,6 +54,8 @@ afterEach(cleanup)
 describe('<App />', () => {
   it('shows the empty state', async () => {
     render(<App />)
+
+    expect(screen.getByText('Do all your stuff!')).toBeInTheDocument()
     expect(await screen.findByText(/add your first todo/i)).toBeInTheDocument()
   })
 
