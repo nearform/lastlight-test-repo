@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest'
+import { readFileSync } from 'node:fs'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -79,7 +80,7 @@ describe('<App />', () => {
     await user.click(checkbox)
 
     await waitFor(() =>
-      expect(screen.getByText('0 remaining')).toBeInTheDocument()
+      expect(screen.getByText('0 remaining')).toBeInTheDocument(),
     )
   })
 
@@ -93,5 +94,27 @@ describe('<App />', () => {
     await user.click(screen.getByRole('button', { name: 'Delete Old task' }))
 
     expect(await screen.findByText(/add your first todo/i)).toBeInTheDocument()
+  })
+})
+
+describe('branding', () => {
+  it('renders the main header with the brand name ZODOS', () => {
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: /zodos/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('sets the page title in index.html to ZODOS', () => {
+    const baseUrl =
+      typeof import.meta.url === 'string' && import.meta.url.startsWith('file:')
+        ? new URL(import.meta.url)
+        : new URL(`file://${process.cwd()}/src/client/App.test.tsx`)
+
+    const htmlPath = new URL('../../index.html', baseUrl)
+    const html = readFileSync(htmlPath, 'utf8')
+
+    expect(html).toContain('<title>ZODOS</title>')
   })
 })
