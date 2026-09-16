@@ -83,6 +83,13 @@ describe('<App />', () => {
     )
   })
 
+  it('renders the app header', async () => {
+    render(<App />)
+    const heading = await screen.findByRole('heading', { name: 'Todos' })
+    expect(heading).toBeInTheDocument()
+    expect(heading.closest('header')).toHaveClass('app-header')
+  })
+
   it('deletes a todo', async () => {
     store.todos = [{ id: 1, title: 'Old task', done: false }]
     store.nextId = 2

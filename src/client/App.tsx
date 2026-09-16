@@ -43,7 +43,9 @@ export default function App() {
 
   return (
     <main className="app">
-      <h1>Todos</h1>
+      <header className="app-header">
+        <h1>Todos</h1>
+      </header>
 
       <form className="add-form" onSubmit={addTodo}>
         <input
